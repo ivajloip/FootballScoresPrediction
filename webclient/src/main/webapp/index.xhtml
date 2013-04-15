@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"      
+      xmlns:h="http://java.sun.com/jsf/html">
+ 
+    <h:head>
+        <title><h:outputText value="#{msg.title}"/></title>
+    </h:head>
+
+    <h:body>
+        <h3><h:outputText value="#{msg.title}" /></h3>
+        
+        <h:form id="teams_form">
+        	<h:messages id="messages" />
+        	
+        	<h:panelGrid columns="2" width="80%">
+	        	<h:panelGroup id="team1_group" width="50%">
+	        		<h:outputText value="#{msg.teams}" />
+		            <h:selectOneMenu id="team1"
+		            				 value="#{teamManager.team1Name}" >
+		                <f:ajax listener="#{teamManager.changeEvent}"
+		                        execute="@this"
+		                        render="team1_players messages" />          
+		                <f:selectItems value="#{teamManager.teams}"
+		                               var="team"
+		                               itemLabel="#{team.name}"
+		                               itemValue="#{team.name}" />
+		            </h:selectOneMenu>
+		
+		            <br />
+		            
+		            <h:selectManyListbox id="team1_players"
+		                                 value="#{teamManager.team1SelectedPlayers}">
+		                <f:selectItems value="#{teamManager.team1Players}"
+		                               var="player"
+		                               itemLabel="#{player.name}"
+	                	               itemValue="{player}"/>
+	            	</h:selectManyListbox>
+	
+	            	<br />
+	
+				</h:panelGroup>
+				
+				<h:panelGroup id="team2_group" width="50%">
+					<h:outputText value="#{msg.teams}" />
+		            <h:selectOneMenu id="team2"
+		            				 value="#{teamManager.team2Name}" >
+		                <f:ajax listener="#{teamManager.changeEvent2}"
+		                        execute="@this"
+		                        render="team2_players messages" />          
+		                <f:selectItems value="#{teamManager.teams}"
+		                               var="team"
+		                               itemLabel="#{team.name}"
+		                               itemValue="#{team.name}" />
+		            </h:selectOneMenu>
+		
+		            <br />
+		            
+		            
+		            <h:selectManyListbox id="team2_players"
+		                                 value="#{teamManager.team2SelectedPlayers}">
+		                <f:selectItems value="#{teamManager.team2Players}"
+		                               var="player"
+		                               itemLabel="#{player.name}"
+	                	               itemValue="{player.name}"/>
+	            	</h:selectManyListbox>
+	
+	            	<br />
+	
+				</h:panelGroup>
+			</h:panelGrid>
+			
+			<h:commandButton id="compute_result" value="commandButton" >
+                <f:ajax listener="#{teamManager.computeResult}" render="result" />
+            </h:commandButton>
+            
+            <h:outputText id="result" value="#{teamManager.result}" />
+        </h:form>
+
+    </h:body>
+</html>
