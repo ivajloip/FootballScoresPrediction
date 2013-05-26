@@ -3,7 +3,7 @@ package bg.uni_sofia.fmi.football_predictor.webclient.beans;
 import java.io.Serializable;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import java.util.List;
@@ -12,16 +12,17 @@ import org.apache.log4j.Logger;
 
 @SuppressWarnings("serial")
 @ManagedBean(name = "teamManager")
-@RequestScoped
+@ViewScoped
 public class TeamManager implements Serializable {
-    static Logger log = Logger.getLogger(
-                           TeamManager.class.getName());
+    static Logger log = Logger.getLogger(TeamManager.class.getName());
     
     private List<Team> teams;
     
-    private List<Player> team1Players;
     private Team team1;
+    private List<Player> team1Players;
     private List<Player> team1SelectedPlayers;
+    
+//    public String[] team2SelectedPlayers;
     
     private List<Player> team2Players;
     private Team team2;
@@ -40,58 +41,32 @@ public class TeamManager implements Serializable {
         teams.add(team);
     }
 
-    public Team getTeam1() {
-      return team1;
-    }
-
     public List<Team> getTeams() {
         System.out.println(teams);
         return teams;
+    }
+    
+    public void setTeams(List<Team> teams) {
+    	this.teams = teams;
+    }
+
+    public Team getTeam1() {
+      return team1;
+    }
+    
+    public void setTeam1(Team team1) {
+        System.out.println("larodi");
+//        this.team1 = new Team(team1);
     }
 
     public List<Player> getTeam1Players() {
         return team1Players;
     }
 
-    
-    public void setTeam1Name(String team1Name) {
-    	team1Name.toCharArray();
-    }
-    
-    public String getTeam1Name() {
-    	return "Chavdar";
-    }
-    
-    public void setTeam2Name(String team2Name) {
-    	team2Name.toString();
-    }
-    
-    public String getTeam2Name() {
-    	return "Fool";
-    }
-    
-    public void setTeam1(Team team1) {
-        System.out.println("larodi");
-//        this.team1 = new Team(team1);
-        
-    }
-
-    public void setTeams(List<Team> teams) {
-        this.teams = teams;
-    }
-
     public void setTeam1Players(List<Player> team1Players) {
         this.team1Players = team1Players;
     }
 
-    public List<Player> getTeam1SelectedPlayers() {
-        return team1SelectedPlayers;
-    }
-
-    public void setTeam1SelectedPlayers(List<Player> team1SelectedPlayers) {
-        this.team1SelectedPlayers = team1SelectedPlayers;
-    }
-    
     public void setResult(String result) {
         this.result = result;
     }
@@ -114,14 +89,6 @@ public class TeamManager implements Serializable {
 
 	public void setTeam2(Team team2) {
 		this.team2 = team2;
-	}
-
-	public List<Player> getTeam2SelectedPlayers() {
-		return team2SelectedPlayers;
-	}
-
-	public void setTeam2SelectedPlayers(List<Player> team2SelectedPlayers) {
-		this.team2SelectedPlayers = team2SelectedPlayers;
 	}
 
 	public void changeEvent(AjaxBehaviorEvent event) {
@@ -147,5 +114,22 @@ public class TeamManager implements Serializable {
 	public void computeResult(AjaxBehaviorEvent event) {
 		System.out.println("Computing result");
 		result += " Result";
+	}
+
+	public List<Player> getTeam1SelectedPlayers() {
+		return team1SelectedPlayers;
+	}
+
+	public void setTeam1SelectedPlayers(List<Player> team1SelectedPlayers) {
+		this.team1SelectedPlayers = team1SelectedPlayers;
+	}
+	
+	public List<Player> getTeam2SelectedPlayers() {
+		return team2SelectedPlayers;
+	}
+
+	public void setTeam2SelectedPlayers(
+			List<Player> team2SelectedPlayers) {
+		this.team2SelectedPlayers = team2SelectedPlayers;
 	}
 }

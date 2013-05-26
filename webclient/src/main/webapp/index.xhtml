@@ -19,7 +19,7 @@
 	        	<h:panelGroup id="team1_group" width="50%">
 	        		<h:outputText value="#{msg.teams}" />
 		            <h:selectOneMenu id="team1"
-		            				 value="#{teamManager.team1Name}" >
+		            				 value="#{teamManager.team1}" >
 		                <f:ajax listener="#{teamManager.changeEvent}"
 		                        execute="@this"
 		                        render="team1_players messages" />          
@@ -27,6 +27,7 @@
 		                               var="team"
 		                               itemLabel="#{team.name}"
 		                               itemValue="#{team.name}" />
+		            	<f:converter converterId="football.team" />
 		            </h:selectOneMenu>
 		
 		            <br />
@@ -36,7 +37,7 @@
 		                <f:selectItems value="#{teamManager.team1Players}"
 		                               var="player"
 		                               itemLabel="#{player.name}"
-	                	               itemValue="{player}"/>
+	                	               itemValue="#{player.name}"/>
 	            	</h:selectManyListbox>
 	
 	            	<br />
@@ -46,7 +47,7 @@
 				<h:panelGroup id="team2_group" width="50%">
 					<h:outputText value="#{msg.teams}" />
 		            <h:selectOneMenu id="team2"
-		            				 value="#{teamManager.team2Name}" >
+		            				 value="#{teamManager.team2}" >
 		                <f:ajax listener="#{teamManager.changeEvent2}"
 		                        execute="@this"
 		                        render="team2_players messages" />          
@@ -54,6 +55,7 @@
 		                               var="team"
 		                               itemLabel="#{team.name}"
 		                               itemValue="#{team.name}" />
+		            	<f:converter converterId="football.team" />
 		            </h:selectOneMenu>
 		
 		            <br />
@@ -64,7 +66,7 @@
 		                <f:selectItems value="#{teamManager.team2Players}"
 		                               var="player"
 		                               itemLabel="#{player.name}"
-	                	               itemValue="{player.name}"/>
+	                	               itemValue="#{player.name}"/>
 	            	</h:selectManyListbox>
 	
 	            	<br />
@@ -72,8 +74,11 @@
 				</h:panelGroup>
 			</h:panelGrid>
 			
-			<h:commandButton id="compute_result" value="commandButton" >
-                <f:ajax listener="#{teamManager.computeResult}" render="result" />
+			<h:commandButton id="compute_result" 
+			                 value="commandButton">
+                <f:ajax listener="#{teamManager.computeResult}"
+                        execute="teams_form:team1_players teams_form:team2_players"
+                        render="result messages" />
             </h:commandButton>
             
             <h:outputText id="result" value="#{teamManager.result}" />
