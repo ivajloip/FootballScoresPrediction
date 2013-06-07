@@ -6,11 +6,13 @@
 <hibernate-mapping package="bg.uni_sofia.fmi.football_predictor.core">
 
 	<class name="Team" table="TEAM">
-		<id name="id" column="ID">
+		<id name="teamId" column="TEAM_ID">
 			<generator class="native" />
 		</id>
-		<property name="name" column="name" />
-		<property name="country" column="country" />
+		<properties name="name_country_unique" unique="true">
+			<property name="name" column="name" />
+			<property name="country" column="country" />
+		</properties>
 	</class>
 
 </hibernate-mapping>

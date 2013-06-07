@@ -1,12 +1,31 @@
 package bg.uni_sofia.fmi.football_predictor.core;
 
 import java.sql.Date;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
-public class Game extends DataBaseObject{
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+
+@Entity
+@Table(name = "game")
+public class Game extends DataBaseObject {
+
+	private Integer gameId;
 
 	private Team homeTeam;
-	private Team awwayTeam;
+	private Team awayTeam;
+
 	// final result
 	private int scoreHome;
 	private int scoreAway;
@@ -16,12 +35,13 @@ public class Game extends DataBaseObject{
 	// ball possession
 	private int posHome;
 	private int posAway;
-	
-	private ArrayList<Player> homePlayers = new ArrayList<Player>();
-	private ArrayList<Player> awayPlayers = new ArrayList<Player>();
+
+	private Set<GamePlayer> homePlayers = new HashSet<GamePlayer>(0);
+	private Set<GamePlayer> awayPlayers = new HashSet<GamePlayer>(0);
 	// first year of the season 1996/97 -> 1996
 	private int season;
 	private Date matchDate;
+	private String league;
 
 	public Date getMatchDate() {
 		return matchDate;
@@ -36,19 +56,20 @@ public class Game extends DataBaseObject{
 	}
 
 	public Game(Team ht, Team at, int scoreH, int scoreA, int posH, int posA,
-			Date date, ArrayList<Player> hp, ArrayList<Player> ap) {
+			Date date, String league, int season) {
 
 		this.homeTeam = ht;
-		this.awwayTeam = at;
+		this.awayTeam = at;
 		this.scoreHome = scoreH;
 		this.scoreAway = scoreA;
 		this.posHome = posH;
 		this.posAway = posA;
 		this.matchDate = date;
-		this.homePlayers = hp;
-		this.awayPlayers = ap;
+		this.league = league;
+		this.season = season;
 	}
-	
+
+	@Column(name = "score_home_half", nullable = true)
 	public int getScoreHomeHalf() {
 		return scoreHomeHalf;
 	}
@@ -57,6 +78,7 @@ public class Game extends DataBaseObject{
 		this.scoreHomeHalf = scoreHomeHalf;
 	}
 
+	@Column(name = "score_away_half", nullable = true)
 	public int getScoreAwayHalf() {
 		return scoreAwayHalf;
 	}
@@ -65,6 +87,7 @@ public class Game extends DataBaseObject{
 		this.scoreAwayHalf = scoreAwayHalf;
 	}
 
+	@Column(name = "season", nullable = true)
 	public int getSeason() {
 		return season;
 	}
@@ -73,22 +96,25 @@ public class Game extends DataBaseObject{
 		this.season = season;
 	}
 
-	public ArrayList<Player> getHomePlayers() {
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.game", cascade = CascadeType.ALL)
+	public Set<GamePlayer> getHomePlayers() {
 		return homePlayers;
 	}
 
-	public void setHomePlayers(ArrayList<Player> homePlayers) {
+	public void setHomePlayers(Set<GamePlayer> homePlayers) {
 		this.homePlayers = homePlayers;
 	}
 
-	public ArrayList<Player> getAwwayPlayers() {
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.game", cascade = CascadeType.ALL)
+	public Set<GamePlayer> getAwayPlayers() {
 		return awayPlayers;
 	}
 
-	public void setAwwayPlayers(ArrayList<Player> awwayPlayers) {
+	public void setAwayPlayers(Set<GamePlayer> awwayPlayers) {
 		this.awayPlayers = awwayPlayers;
 	}
 
+	@ManyToOne(cascade = CascadeType.ALL)
 	public Team getHomeTeam() {
 		return homeTeam;
 	}
@@ -97,14 +123,16 @@ public class Game extends DataBaseObject{
 		this.homeTeam = homeTeam;
 	}
 
-	public Team getAwwayTeam() {
-		return awwayTeam;
+	@ManyToOne(cascade = CascadeType.ALL)
+	public Team getAwayTeam() {
+		return awayTeam;
 	}
 
-	public void setAwwayTeam(Team awwayTeam) {
-		this.awwayTeam = awwayTeam;
+	public void setAwayTeam(Team awwayTeam) {
+		this.awayTeam = awwayTeam;
 	}
 
+	@Column(name = "score_home", nullable = true)
 	public int getScoreHome() {
 		return scoreHome;
 	}
@@ -113,6 +141,7 @@ public class Game extends DataBaseObject{
 		this.scoreHome = scoreHome;
 	}
 
+	@Column(name = "score_away", nullable = true)
 	public int getScoreAway() {
 		return scoreAway;
 	}
@@ -121,6 +150,7 @@ public class Game extends DataBaseObject{
 		this.scoreAway = scoreAway;
 	}
 
+	@Column(name = "position_home", nullable = true)
 	public int getPosHome() {
 		return posHome;
 	}
@@ -129,11 +159,53 @@ public class Game extends DataBaseObject{
 		this.posHome = posHome;
 	}
 
+	@Column(name = "position_away", nullable = true)
 	public int getPosAway() {
 		return posAway;
 	}
 
 	public void setPosAway(int posAway) {
 		this.posAway = posAway;
+	}
+
+	@Override
+	public String makeSelectStatement() {
+		return "from Game g where g.homeTeam = '" + this.homeTeam.getTeamId()
+				+ "' and g.matchDate = '" + this.matchDate + "'";
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		Game g = (Game) obj;
+		return this.getHomeTeam().equals(g.getHomeTeam())
+				&& this.getMatchDate().equals(g.getMatchDate());
+	}
+
+	@Override
+	public Criteria createCriteria(Criteria criteria) {
+		criteria.add(Restrictions.eq("homeTeam", this.homeTeam));
+		criteria.add(Restrictions.eq("awayTeam", this.awayTeam));
+		criteria.add(Restrictions.eq("matchDate", this.matchDate));
+		return criteria;
+	}
+
+	@Id
+	@GeneratedValue
+	@Column(name = "GAME_ID", unique = true, nullable = false)
+	public Integer getGameId() {
+		return gameId;
+	}
+
+	public void setGameId(Integer gameId) {
+		this.gameId = gameId;
+	}
+
+	@Column(name = "league", nullable = true)
+	public String getLeague() {
+		return league;
+	}
+
+	public void setLeague(String league) {
+		this.league = league;
 	}
 }

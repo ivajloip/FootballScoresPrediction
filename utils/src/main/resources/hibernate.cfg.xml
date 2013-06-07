@@ -27,9 +27,18 @@
 		<property name="show_sql">false</property>
 
 		<property name="hbm2ddl.auto">validate</property>
+		
+		<property name="hibernate.hbm2ddl.auto" >update</property>
 
-		<mapping resource="Game.hbm.xml" />
-		<mapping resource="Team.hbm.xml" />
+		
+		
+		<mapping class="bg.uni_sofia.fmi.football_predictor.core.Game" />
+		<mapping class="bg.uni_sofia.fmi.football_predictor.core.Player" />
+		<mapping class="bg.uni_sofia.fmi.football_predictor.core.GamePlayer"/>
+		<mapping class="bg.uni_sofia.fmi.football_predictor.core.GamePlayerId"/>
+		<mapping class="bg.uni_sofia.fmi.football_predictor.core.Team" />
+		
+		
 
 	</session-factory>
 </hibernate-configuration>

@@ -1,14 +1,12 @@
 package bg.uni_sofia.fmi.football_predictor.core;
 
-public class DataBaseObject {
-	protected Long id;
+import java.io.Serializable;
 
-	public Long getId() {
-		return id;
-	}
+import org.hibernate.Criteria;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+public abstract class DataBaseObject implements Serializable {
 
+	public abstract String makeSelectStatement();
+
+	public abstract Criteria createCriteria(Criteria criteria);
 }
