@@ -14,6 +14,24 @@ public class Match {
 		awayPlayers = new HashSet<Player>(0);
 	}
 
+	public Set<Player> getAwayPlayers() {
+		return awayPlayers;
+	}
+
+	public Set<Player> getHomePlayers() {
+		return homePlayers;
+	}
+
+	public void printHome() {
+		for (Player player : homePlayers)
+			System.out.println(player.getName());
+	}
+
+	public void printAway() {
+		for (Player player : awayPlayers)
+			System.out.println(player.getName());
+	}
+
 	Game game;
 	Team home;
 	Team away;

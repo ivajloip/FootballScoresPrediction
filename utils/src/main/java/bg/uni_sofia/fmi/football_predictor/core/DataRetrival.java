@@ -113,7 +113,7 @@ public class DataRetrival {
 					}
 				}
 				//System.out.println(scorers);
-				System.out.println("bhfghhdtgfhf");
+				//System.out.println("bhfghhdtgfhf");
 				String tmpScorers = "";
 				if (scorers.length() > 0) {
 					tmpScorers = scorers.toString();
@@ -133,52 +133,8 @@ public class DataRetrival {
 						tmpScorers = tmpScorers.substring(1);
 					}
 				}
-				System.out.println(tmpScorers);
-				String goals[] = tmpScorers.split(",");
-				Map<String, Integer> homeScorers = new Hashtable<String, Integer>();
-				Map<String, Integer> awayScorers = new Hashtable<String, Integer>();
+				//System.out.println(tmpScorers);
 				
-				for(int k = 0; k < match.game.getScoreHome(); k++){
-					if(!homeScorers.containsKey(goals[k])){
-						homeScorers.put(goals[k], new Integer(1));
-					}
-					else{
-						homeScorers.put(goals[k], homeScorers.get(goals[k]) + 1);
-					}
-				}
-				
-				Iterator<String> iter = homeScorers.keySet().iterator();
-				while(iter.hasNext()){
-					Player player = new Player(iter.next());
-					match.homePlayers.add(player);
-//					GamePlayer gp = new GamePlayer();
-//					gp.setGame(match.game);
-//					gp.setPlayer(player);
-//					gp.setGoals(homeScorers.get(player.getName()));
-//					match.game.getHomePlayers().add(gp);
-				}
-				
-				//Away team goals
-				
-				for(int k = 1; k < match.game.getScoreAway(); k++){
-					if(!awayScorers.containsKey(goals[match.game.getScoreHome() * 2 + match.game.getScoreAway() + k])){
-						awayScorers.put(goals[k], new Integer(1));
-					}
-					else{
-						awayScorers.put(goals[k], awayScorers.get(goals[k]) + 1);
-					}
-				}
-				
-				iter = awayScorers.keySet().iterator();
-				while(iter.hasNext()){
-					Player player = new Player(iter.next());
-					match.awayPlayers.add(player);
-//					GamePlayer gp = new GamePlayer();
-//					gp.setGame(match.game);
-//					gp.setPlayer(player);
-//					gp.setGoals(awayScorers.get(player.getName()));
-//					match.game.getAwayPlayers().add(gp);
-				}
 				
 				// {Home Player, Number, Away player, 11}
 				for (int k = 3; k < 14; k++) {
@@ -205,6 +161,57 @@ public class DataRetrival {
 					}
 				}
 
+				String goals[] = tmpScorers.split(",");
+				Map<String, Integer> homeScorers = new Hashtable<String, Integer>();
+				Map<String, Integer> awayScorers = new Hashtable<String, Integer>();
+				
+				for(int k = 0; k < match.game.getScoreHome(); k++){
+					if(!match.game.getAwayPlayers().contains(goals[k])){
+						if(!homeScorers.containsKey(goals[k])){
+							homeScorers.put(goals[k], new Integer(1));
+						}
+						else{
+							homeScorers.put(goals[k], homeScorers.get(goals[k]) + 1);
+						}
+					}
+				}
+				
+				Iterator<String> iter = homeScorers.keySet().iterator();
+				while(iter.hasNext()){
+					Player player = new Player(iter.next());
+					match.homePlayers.add(player);
+//					GamePlayer gp = new GamePlayer();
+//					gp.setGame(match.game);
+//					gp.setPlayer(player);
+//					gp.setGoals(homeScorers.get(player.getName()));
+//					match.game.getHomePlayers().add(gp);
+				}
+				
+				//Away team goals
+				
+				for(int k = 0; k < match.game.getScoreAway(); k++){
+					String goalee = goals[match.game.getScoreHome() * 2 + match.game.getScoreAway() + k];
+					if(!match.game.getHomePlayers().contains(goalee)){
+						if(!awayScorers.containsKey(goalee)){
+							awayScorers.put(goalee, new Integer(1));
+						}
+						else{
+							awayScorers.put(goalee, awayScorers.get(goalee) + 1);
+						}
+					}
+				}
+				
+				iter = awayScorers.keySet().iterator();
+				while(iter.hasNext()){
+					Player player = new Player(iter.next());
+					match.awayPlayers.add(player);
+//					GamePlayer gp = new GamePlayer();
+//					gp.setGame(match.game);
+//					gp.setPlayer(player);
+//					gp.setGoals(awayScorers.get(player.getName()));
+//					match.game.getAwayPlayers().add(gp);
+				}
+				
 				// {Minute, ON player, OFF player; n} {HomeBenchWarmer, Number,
 				// AwayBenchwarmer; 5}
 				StringBuilder benchWarmers = new StringBuilder();
@@ -244,7 +251,7 @@ public class DataRetrival {
 					// System.out.println(substitutions);
 					// System.out.println(remarks);
 				}
-				System.out.println();
+				//System.out.println();
 			HibernateUtils.save(match);
 			} catch (Exception e) {
 				e.printStackTrace();

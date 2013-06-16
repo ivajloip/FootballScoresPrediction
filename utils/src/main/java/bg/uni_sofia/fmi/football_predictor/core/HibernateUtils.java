@@ -70,50 +70,43 @@ public class HibernateUtils {
 		return results;
 	}
 
+	private static int count = 0;
+
 	public static void save(Match match) {
-		
+
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-		match.away = (Team) save(match.away, session);
-		session.getTransaction().commit();
-		session.close();
-		
-		session = sessionFactory.openSession();
-		session.beginTransaction();
-		match.home = (Team) save(match.home, session);
-		session.getTransaction().commit();
-		session.close();
-		
-		match.game.setAwayTeam(match.away);
-		match.game.setHomeTeam(match.home);
-		
-		for (Player player : match.awayPlayers){
-			session = sessionFactory.openSession();
-			session.beginTransaction();
-			player = (Player) save(player, session);
+		try {
+			match.away = (Team) save(match.away, session);
+
+			match.home = (Team) save(match.home, session);
+
+			match.game.setAwayTeam(match.away);
+			match.game.setHomeTeam(match.home);
+
+			for (Player player : match.awayPlayers) {
+				player = (Player) save(player, session);
+				GamePlayer gp = new GamePlayer();
+				gp.setGame(match.game);
+				gp.setPlayer(player);
+				match.game.getAwayPlayers().add(gp);
+			}
+			for (Player player : match.homePlayers) {
+				player = (Player) save(player, session);
+				GamePlayer gp = new GamePlayer();
+				gp.setGame(match.game);
+				gp.setPlayer(player);
+				match.game.getHomePlayers().add(gp);
+			}
+			match.game = (Game) save(match.game, session);
 			session.getTransaction().commit();
+		} catch (Exception e) {
+			
+			count++;
+			System.out.println(count);
+		} finally {
 			session.close();
-			GamePlayer gp = new GamePlayer();
-			gp.setGame(match.game);
-			gp.setPlayer(player);
-			match.game.getAwayPlayers().add(gp);
 		}
-		for (Player player : match.homePlayers){
-			session = sessionFactory.openSession();
-			session.beginTransaction();
-			player = (Player) save(player, session);
-			session.getTransaction().commit();
-			session.close();
-			GamePlayer gp = new GamePlayer();
-			gp.setGame(match.game);
-			gp.setPlayer(player);
-			match.game.getHomePlayers().add(gp);
-		}
-		session = sessionFactory.openSession();
-		session.beginTransaction();
-		match.game = (Game) save(match.game, session);
-		session.getTransaction().commit();
-		session.close();
 	}
 
 	// Test...
