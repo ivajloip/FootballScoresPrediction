@@ -57,7 +57,7 @@ public class SolrQueryUtil {
 		
 		for (SolrDocument doc : results) {
 			String docTitle = (String) doc.getFirstValue("title");
-			String docBody = (String) doc.getFirstValue("body");
+			String docBody = (String) doc.getFirstValue("content");
 			String docUrl = (String) doc.getFirstValue("url");
 			SolrQueryResponse item =
 					new SolrQueryResponse(docTitle, docBody, docUrl);

@@ -70,11 +70,11 @@ public class TeamManager implements Serializable {
     public void setTeam1(Team team1) {
         this.team1 = team1;
         
-        Collection<SolrQueryResponse> teamNews = searchNews(team1.getName());
+        Collection<SolrQueryResponse> teamNews = findNews(team1.getName());
         news.put(team1.getName(), teamNews);
     }
 
-    private Collection<SolrQueryResponse> searchNews(String name) {
+    private Collection<SolrQueryResponse> findNews(String name) {
     	try {
 			Collection<SolrQueryResponse> news = SolrQueryUtil.find(name);
 			return news;
@@ -116,7 +116,7 @@ public class TeamManager implements Serializable {
 	public void setTeam2(Team team2) {
 		this.team2 = team2;
 		
-        Collection<SolrQueryResponse> teamNews = searchNews(team2.getName());
+        Collection<SolrQueryResponse> teamNews = findNews(team2.getName());
         news.put(team2.getName(), teamNews);
 	}
 
@@ -160,5 +160,25 @@ public class TeamManager implements Serializable {
 	public void setTeam2SelectedPlayers(
 			List<Player> team2SelectedPlayers) {
 		this.team2SelectedPlayers = team2SelectedPlayers;
+	}
+	
+	public Collection<SolrQueryResponse> getNews() {
+		Collection<SolrQueryResponse> result =
+				new ArrayList<SolrQueryResponse>();
+		
+		for(Collection<SolrQueryResponse> newsSet : news.values()) {
+			result.addAll(newsSet);
+		}
+		
+		return result;
+	}
+	
+	public String getFormatedString(String value) {
+		int maxLength = 50;
+		if (value.length() < maxLength) {
+			return value;
+		}
+		
+		return value.substring(maxLength);
 	}
 }
