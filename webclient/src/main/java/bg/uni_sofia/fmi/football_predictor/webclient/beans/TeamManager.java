@@ -6,9 +6,17 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.AjaxBehaviorEvent;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
+
+import bg.uni_sofia.fmi.football_predictor.core.DataBaseObject;
+import bg.uni_sofia.fmi.football_predictor.core.Team;
+import bg.uni_sofia.fmi.football_predictor.core.HibernateUtils;
+import bg.uni_sofia.fmi.football_predictor.core.solr.SolrQueryResponse;
+import bg.uni_sofia.fmi.football_predictor.core.solr.SolrQueryUtil;
 
 @SuppressWarnings("serial")
 @ManagedBean(name = "teamManager")
@@ -29,16 +37,21 @@ public class TeamManager implements Serializable {
     private List<Player> team2SelectedPlayers;
     
     public String result = "Foo";
+    
+    private HashMap<String, Collection<SolrQueryResponse>> news;
 
     public TeamManager() {
         teams = new ArrayList<Team>();
         team1Players = new ArrayList<Player>();
         team2Players = new ArrayList<Player>();
+        news = new HashMap<String, Collection<SolrQueryResponse>>();
         
-        Team team = new Team("Chavdar");
-        teams.add(team);
-        team = new Team("Fool");
-        teams.add(team);
+        Collection<DataBaseObject> databaseTeams =
+        		HibernateUtils.getAllEntities(Team.class);
+        
+        for (DataBaseObject team : databaseTeams) {
+        	teams.add((Team) team);
+        }
     }
 
     public List<Team> getTeams() {
@@ -55,11 +68,24 @@ public class TeamManager implements Serializable {
     }
     
     public void setTeam1(Team team1) {
-        System.out.println("larodi");
-//        this.team1 = new Team(team1);
+        this.team1 = team1;
+        
+        Collection<SolrQueryResponse> teamNews = searchNews(team1.getName());
+        news.put(team1.getName(), teamNews);
     }
 
-    public List<Player> getTeam1Players() {
+    private Collection<SolrQueryResponse> searchNews(String name) {
+    	try {
+			Collection<SolrQueryResponse> news = SolrQueryUtil.find(name);
+			return news;
+    	} catch (Exception ex) {
+    		log.error(ex);
+    	}
+    	
+    	return new ArrayList<SolrQueryResponse>();
+	}
+
+	public List<Player> getTeam1Players() {
         return team1Players;
     }
 
@@ -89,6 +115,9 @@ public class TeamManager implements Serializable {
 
 	public void setTeam2(Team team2) {
 		this.team2 = team2;
+		
+        Collection<SolrQueryResponse> teamNews = searchNews(team2.getName());
+        news.put(team2.getName(), teamNews);
 	}
 
 	public void changeEvent(AjaxBehaviorEvent event) {

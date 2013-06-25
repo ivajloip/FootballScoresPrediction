@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="bg.uni_sofia.fmi.football_predictor.core">
+
+	<class name="Game" table="GAME">
+		<id name="id" column="GAME_ID">
+			<generator class="native" />
+		</id>
+		<property name="scoreHome" column="score_home" />
+		<property name="scoreAway" column="score_away" />
+		<property name="scoreHomeHalf" column="score_home_half" />
+		<property name="scoreAwayHalf" column="score_away_half" />
+		<property name="posHome" column="pos_home" />
+		<property name="posAway" column="pos_away" />
+		<property name="season" column="season" />
+		<property name="matchDate" type="date" column="match_date" />
+		<many-to-one name="homeTeam" class="Team" column="home_team"
+			cascade="all" not-null="true" />
+		<many-to-one name="awayTeam" class="Team" column="away_team"
+			cascade="all" not-null="true" />
+		<set name="awayPlayers" table="game_player" lazy="true" fetch="select"
+			cascade="all" inverse="true">
+			<key>
+				<column name="pk.game" not-null="true" />
+			</key>
+			<one-to-many class="GamePlayer" />
+		</set>
+		<set name="homePlayers" table="game_player" lazy="true" fetch="select"
+			cascade="all" inverse="true">
+			<key>
+				<column name="pk.game" not-null="true" />
+			</key>
+			<one-to-many class="GamePlayer" />
+		</set>
+	</class>
+
+
+</hibernate-mapping>

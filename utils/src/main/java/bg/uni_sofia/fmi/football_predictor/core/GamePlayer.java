@@ -1,6 +1,5 @@
 package bg.uni_sofia.fmi.football_predictor.core;
 
-import java.beans.Transient;
 import java.io.Serializable;
 
 import javax.persistence.AssociationOverride;
