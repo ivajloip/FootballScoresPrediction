@@ -18,6 +18,7 @@ import bg.uni_sofia.fmi.football_predictor.core.HibernateUtils;
 import bg.uni_sofia.fmi.football_predictor.core.solr.SolrQueryResponse;
 import bg.uni_sofia.fmi.football_predictor.core.solr.SolrQueryUtil;
 import bg.uni_sofia.fmi.football_predictor.core.Player;
+import bg.uni_sofia.fmi.football_predictor.engine.Main;
 
 @SuppressWarnings("serial")
 @ManagedBean(name = "teamManager")
@@ -37,7 +38,7 @@ public class TeamManager implements Serializable {
     private Team team2;
     private List<Player> team2SelectedPlayers;
     
-    public String result = "Foo";
+    public String result = "";
     
     private HashMap<String, Collection<SolrQueryResponse>> news;
 
@@ -139,8 +140,8 @@ public class TeamManager implements Serializable {
 	
 	public void computeResult(AjaxBehaviorEvent event) {
 		System.out.println("Computing result");
-		
-		result += " Result";
+		result = "" +
+			Main.guess(team1, team2, team1SelectedPlayers, team2SelectedPlayers);
 	}
 
 	public List<Player> getTeam1SelectedPlayers() {

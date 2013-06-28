@@ -5,7 +5,7 @@
 	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
 	<classpathentry kind="var" path="M2_REPO/javax/servlet/jstl/1.2/jstl-1.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="M2_REPO/bg/uni_sofia/fmi/football_predictor/utils/1.0.0-SNAPSHOT/utils-1.0.0-SNAPSHOT.jar" sourcepath="/FOO/utils/src"/>
+	<classpathentry kind="var" path="M2_REPO/bg/uni_sofia/fmi/football_predictor/utils/1.0.0-SNAPSHOT/utils-1.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-lang3/3.0/commons-lang3-3.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/apache/solr/solr-core/1.4.0/solr-core-1.4.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/apache/solr/solr-solrj/3.1.0/solr-solrj-3.1.0.jar"/>
@@ -69,6 +69,7 @@
 	<classpathentry kind="var" path="M2_REPO/hsqldb/hsqldb/1.8.0.10/hsqldb-1.8.0.10.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-mapper-asl/1.0.1/jackson-mapper-asl-1.0.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-core-asl/1.0.1/jackson-core-asl-1.0.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/bg/uni_sofia/fmi/football_predictor/engine/1.0.0-SNAPSHOT/engine-1.0.0-SNAPSHOT.jar" sourcepath="/FOO/engine"/>
 	<classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate-core/4.2.0.Final/hibernate-core-4.2.0.Final.jar"/>
 	<classpathentry kind="var" path="M2_REPO/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/jboss/logging/jboss-logging/3.1.0.GA/jboss-logging-3.1.0.GA.jar"/>

@@ -21,6 +21,9 @@ public class Main {
 
 	private static NeuralNetwork network = new NeuralNetwork(8, 3, 10, 0.1);
 	private static List<Game> games = new ArrayList<Game>();
+	
+	public static String neuronNetworkPath = 
+			"/media/data/home/ubuntu_users/ivaylo/network.ser";
 
 	public static double getPercantageWin(List<Game> games, Team team) {
 		int numGames = games.size();
@@ -131,7 +134,7 @@ public class Main {
 
 		FileInputStream fis;
 		try {
-			fis = new FileInputStream("C:\\Users\\stanev\\Desktop\\network.ser");
+			fis = new FileInputStream(neuronNetworkPath);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			NeuralNetwork network = (NeuralNetwork) ois.readObject();
 			res = network.guess(a);

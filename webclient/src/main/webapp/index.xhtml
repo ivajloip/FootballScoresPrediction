@@ -84,7 +84,13 @@
                         render="result messages" />
             </h:commandButton>
             
-            <h:outputText id="result" value="#{teamManager.result}" />
+            <br/>
+            <br/>
+            
+            <h:outputText id="result" value="Expected Result: #{teamManager.result}" />
+            
+            <br/>
+            <br/>
             
 	        <h:outputText value="News" />
 	        <h:dataTable id="news" value="#{teamManager.news}" var="news">
