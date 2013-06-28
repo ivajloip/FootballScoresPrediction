@@ -57,7 +57,7 @@ public class SolrQueryResponse implements Serializable {
 			return value;
 		}
 		
-		return value.substring(maxLength);
+		return value.substring(0, maxLength);
 	}
 	
 }

@@ -132,27 +132,14 @@ public class TeamManager implements Serializable {
 	}
 
 	public void changeEvent(AjaxBehaviorEvent event) {
-    	System.out.println("Alabala");
-//        Player player1 = new Player("Larodi");
-//        Player player2 = new Player("Mityo");
-//
-//        team1Players.add(player1);
-//        team1Players.add(player2);
-        result += "Bar";
     }
 	
 	public void changeEvent2(AjaxBehaviorEvent event) {
-    	System.out.println("Alabala2");
-//        Player player1 = new Player("Larodi2");
-//        Player player2 = new Player("Mityo2");
-//
-//        team2Players.add(player1);
-//        team2Players.add(player2);
-        result += "Bar";
     }
 	
 	public void computeResult(AjaxBehaviorEvent event) {
 		System.out.println("Computing result");
+		
 		result += " Result";
 	}
 

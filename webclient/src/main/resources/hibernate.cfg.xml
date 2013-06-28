@@ -36,6 +36,8 @@
 		<mapping class="bg.uni_sofia.fmi.football_predictor.core.Player" />
 		<mapping class="bg.uni_sofia.fmi.football_predictor.core.GamePlayer"/>
 		<mapping class="bg.uni_sofia.fmi.football_predictor.core.GamePlayerId"/>
+		<mapping class="bg.uni_sofia.fmi.football_predictor.core.GamePlayerAway"/>
+		<mapping class="bg.uni_sofia.fmi.football_predictor.core.GamePlayerIdAway"/>
 		<mapping class="bg.uni_sofia.fmi.football_predictor.core.Team" />
 		
 		
