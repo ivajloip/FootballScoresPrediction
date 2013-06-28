@@ -18,7 +18,7 @@ public class UpdateStarter {
 	@PostConstruct
 	public void init() {
 		scheduler = Executors.newSingleThreadScheduledExecutor();
-		scheduler.scheduleAtFixedRate(new NutchRunner(), 0, 4, TimeUnit.HOURS);
+//		scheduler.scheduleAtFixedRate(new NutchRunner(), 0, 4, TimeUnit.HOURS);
 	}
 
 	@PreDestroy

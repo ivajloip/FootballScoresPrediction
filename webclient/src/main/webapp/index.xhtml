@@ -86,14 +86,13 @@
             
             <h:outputText id="result" value="#{teamManager.result}" />
             
-            
 	        <h:outputText value="News" />
 	        <h:dataTable id="news" value="#{teamManager.news}" var="news">
 		        <h:column headerClass="half-width">
 	                <f:facet name="header">Title</f:facet>
 	                <h:outputLink value="#{news.url}" target="_blank">
 		                <h:outputText
-		                value="#{teamManager.getFormatedString(news.title)}"/>
+		                value="#{teamManager.formattedTitle}"/>
                    </h:outputLink>
 	            </h:column>
 	            
@@ -101,7 +100,7 @@
 	                <f:facet name="header">Content</f:facet>
 	                <h:outputLink value="#{news.url}" target="_blank">
 	                   <h:outputText
-		                   value="#{teamManager.getFormatedString(news.body)}"/>
+		                   value="#{teamManager.formattedBody}"/>
                    </h:outputLink>
 	            </h:column>
 	        </h:dataTable>

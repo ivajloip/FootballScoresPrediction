@@ -4,5 +4,8 @@
 *.jar
 *.war
 *.ear
+*.swp
+*.swo
 target/
 .settings/
+matches/

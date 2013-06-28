@@ -43,4 +43,21 @@ public class SolrQueryResponse implements Serializable {
 		this.url = url;
 	}
 	
+	public String getFormattedTitle() {
+		return format(getTitle());
+	}
+	
+	public String getFormattedBody() {
+		return format(getBody());
+	}
+	
+	public String format(String value) {
+		int maxLength = 50;
+		if (value.length() < maxLength) {
+			return value;
+		}
+		
+		return value.substring(maxLength);
+	}
+	
 }
