@@ -55,7 +55,8 @@ public class DataRetrival {
 
 	public static void getInfoForMatch() throws IOException {
 
-		File allInfo = new File("D:\\matches");
+		File allInfo = new File(
+				"/media/data/workspace/github_repos/FootballScoresPrediction/matches");
 		File[] matches = allInfo.listFiles();
 		for (int i = 1; i < matches.length; i++) {
 			Match match = new Match();

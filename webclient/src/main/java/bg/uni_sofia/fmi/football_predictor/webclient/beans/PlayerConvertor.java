@@ -4,6 +4,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import bg.uni_sofia.fmi.football_predictor.core.Player;
 
 @FacesConverter("football.player")
 public class PlayerConvertor implements Converter {

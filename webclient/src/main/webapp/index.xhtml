@@ -92,7 +92,7 @@
 	                <f:facet name="header">Title</f:facet>
 	                <h:outputLink value="#{news.url}" target="_blank">
 		                <h:outputText
-		                value="#{teamManager.formattedTitle}"/>
+		                value="#{news.formattedTitle}"/>
                    </h:outputLink>
 	            </h:column>
 	            
@@ -100,7 +100,7 @@
 	                <f:facet name="header">Content</f:facet>
 	                <h:outputLink value="#{news.url}" target="_blank">
 	                   <h:outputText
-		                   value="#{teamManager.formattedBody}"/>
+		                   value="#{news.formattedBody}"/>
                    </h:outputLink>
 	            </h:column>
 	        </h:dataTable>

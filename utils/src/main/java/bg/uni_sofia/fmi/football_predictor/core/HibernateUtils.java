@@ -125,8 +125,8 @@ public class HibernateUtils {
 	}
 
 	public static Set<Player> getPlayers(Team team) {
-
 		Set<Player> results = new HashSet<Player>();
+
 		Session session = sessionFactory.openSession();
 		team = (Team) get(team, session);
 		session.beginTransaction();
@@ -134,6 +134,7 @@ public class HibernateUtils {
 		criteria.add(Restrictions.or(Restrictions.eq("awayTeam", team),
 				Restrictions.eq("homeTeam", team)));
 		criteria.add(Restrictions.eq("season", 2012));
+
 		List<Game> games = criteria.list();
 		for (Game game : games) {
 			if (game.getAwayTeam().equals(team)) {

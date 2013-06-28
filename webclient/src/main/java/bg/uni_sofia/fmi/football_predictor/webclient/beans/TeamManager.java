@@ -17,6 +17,7 @@ import bg.uni_sofia.fmi.football_predictor.core.Team;
 import bg.uni_sofia.fmi.football_predictor.core.HibernateUtils;
 import bg.uni_sofia.fmi.football_predictor.core.solr.SolrQueryResponse;
 import bg.uni_sofia.fmi.football_predictor.core.solr.SolrQueryUtil;
+import bg.uni_sofia.fmi.football_predictor.core.Player;
 
 @SuppressWarnings("serial")
 @ManagedBean(name = "teamManager")
@@ -70,6 +71,11 @@ public class TeamManager implements Serializable {
     public void setTeam1(Team team1) {
         this.team1 = team1;
         
+        team1Players.clear();
+        for (Player player : HibernateUtils.getPlayers(team1)) {
+        	team1Players.add(player);
+        }
+        
         Collection<SolrQueryResponse> teamNews = findNews(team1.getName());
         news.put(team1.getName(), teamNews);
     }
@@ -116,27 +122,32 @@ public class TeamManager implements Serializable {
 	public void setTeam2(Team team2) {
 		this.team2 = team2;
 		
+        team2Players.clear();
+        for (Player player : HibernateUtils.getPlayers(team2)) {
+        	team2Players.add(player);
+        }
+		
         Collection<SolrQueryResponse> teamNews = findNews(team2.getName());
         news.put(team2.getName(), teamNews);
 	}
 
 	public void changeEvent(AjaxBehaviorEvent event) {
     	System.out.println("Alabala");
-        Player player1 = new Player("Larodi");
-        Player player2 = new Player("Mityo");
-
-        team1Players.add(player1);
-        team1Players.add(player2);
+//        Player player1 = new Player("Larodi");
+//        Player player2 = new Player("Mityo");
+//
+//        team1Players.add(player1);
+//        team1Players.add(player2);
         result += "Bar";
     }
 	
 	public void changeEvent2(AjaxBehaviorEvent event) {
     	System.out.println("Alabala2");
-        Player player1 = new Player("Larodi2");
-        Player player2 = new Player("Mityo2");
-
-        team2Players.add(player1);
-        team2Players.add(player2);
+//        Player player1 = new Player("Larodi2");
+//        Player player2 = new Player("Mityo2");
+//
+//        team2Players.add(player1);
+//        team2Players.add(player2);
         result += "Bar";
     }
 	

@@ -12,7 +12,7 @@ public class TeamConvertor implements Converter {
 
 	@Override
 	public Team getAsObject(FacesContext arg0, UIComponent arg1, String value) {
-		return new Team(value, "");
+		return new Team(value, "England");
 	}
 
 	@Override
