@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+  <property>
+     <name>http.agent.name</name>
+      <value>My Nutch Spider</value>
+    </property>
+
+    <property>
+      <name>plugin.folders</name>
+      <value>/media/data/workspace/programs/apache-nutch-1.6/plugins</value>
+      <description />
+    </property>
+
+    <property>
+      <name>searcher.dir</name>
+      <value>/media/data/workspace/programs/apache-nutch-1.6/crawl_goal_com</value>
+      <description />
+    </property>
+</configuration>
