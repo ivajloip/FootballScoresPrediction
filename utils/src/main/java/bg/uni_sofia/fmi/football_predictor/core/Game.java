@@ -178,14 +178,15 @@ public class Game extends DataBaseObject implements Comparable<Game> {
 	public boolean equals(Object obj) {
 		Game g = (Game) obj;
 		return this.getHomeTeam().equals(g.getHomeTeam())
-				&& this.getMatchDate().equals(g.getMatchDate());
+				&& this.getAwayTeam().equals(g.getAwayTeam())
+				&& this.getSeason() == g.getSeason();
 	}
 
 	@Override
 	public Criteria createCriteria(Criteria criteria) {
 		criteria.add(Restrictions.eq("homeTeam", this.homeTeam));
 		criteria.add(Restrictions.eq("awayTeam", this.awayTeam));
-		criteria.add(Restrictions.eq("matchDate", this.matchDate));
+		criteria.add(Restrictions.eq("season", this.season));
 		return criteria;
 	}
 
