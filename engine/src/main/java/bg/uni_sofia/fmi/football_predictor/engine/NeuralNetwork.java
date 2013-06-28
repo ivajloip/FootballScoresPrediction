@@ -37,7 +37,7 @@ public class NeuralNetwork {
 			}
 	}
 
-	public void guess(double[] example) {
+	public int guess(double[] example) {
 		double[] inner_layer = new double[this.innerNodes];
 		double[] answer_layer = new double[this.numClasses];
 
@@ -53,9 +53,20 @@ public class NeuralNetwork {
 			for (int j = 0; j < this.innerNodes; j++)
 				sum += inner_layer[j] * this.innerToOutputEdges[j][i];
 			answer_layer[i] = 1 / (1 + Math.pow(Math.E, -sum));
-
-			System.out.println(answer_layer[i]);
 		}
+		int max = 0;
+		double maxProb = answer_layer[0];
+		System.out.println("==============================================");
+		for (int i = 0; i < answer_layer.length; i++) {
+			System.out.println(answer_layer[i]);
+			System.out.println();
+			if (answer_layer[i] > maxProb) {
+				maxProb = answer_layer[i];
+				max = i;
+			}
+		}
+		
+		return max;
 	}
 
 	public void teach(double[] example, int kind) {
