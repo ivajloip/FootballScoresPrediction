@@ -1,11 +1,20 @@
 package bg.uni_sofia.fmi.football_predictor.engine;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import bg.uni_sofia.fmi.football_predictor.core.Game;
+import bg.uni_sofia.fmi.football_predictor.core.HibernateUtils;
 import bg.uni_sofia.fmi.football_predictor.core.MoreUtils;
+import bg.uni_sofia.fmi.football_predictor.core.Player;
 import bg.uni_sofia.fmi.football_predictor.core.Team;
 
 public class Main {
@@ -16,12 +25,12 @@ public class Main {
 	public static double getPercantageWin(List<Game> games, Team team) {
 		int numGames = games.size();
 		if (games.isEmpty())
-			return 1.33 / 3;
+			return (1.33 / 3) ;
 		else {
 			int points = 0;
 			for (int i = 0; i < numGames; i++)
 				points += getPointsFromGame(games.get(i), team);
-			return (double) points / (numGames * 3);
+			return ((double) points / (numGames * 3)) ;
 		}
 	}
 
@@ -107,36 +116,73 @@ public class Main {
 		return res;
 	}
 
-	public static void main(String[] args) {
-		for (int s = 2003; s < 2012; s++) {
-			List games = MoreUtils.getGamesPerSeason(s);
-			Collections.sort(games);
-			for (int i = 0; i < games.size(); i++) {
-				Game game = (Game) games.get(i);
-				double[] values = prepareGame(game);
-				if (game.sign() != 0)
-					for (int j = 0; j < 100; j++)
-						network.teach(values, game.sign());
-				else
-					for (int j = 0; j < 50; j++)
-						network.teach(values, game.sign());
-			}
-		}
+	public static int guess(Team t1, Team t2, List<Player> home,
+			List<Player> away) {
 
-		List testGames = MoreUtils.getGamesPerSeason(2012);
-		int correct = 0;
-		Collections.sort(testGames);
-		for (int i = 0; i < testGames.size(); i++) {
-			System.out.println(((Game) testGames.get(i)).getMatchDate());
-			Game game = (Game) testGames.get(i);
-			double[] values = prepareGame(game);
-			int guess = network.guess(values);
-			System.out.println(game.getHomeTeam().getName() + " : "
-					+ game.getAwayTeam().getName() + " : " + guess);
-			if (guess == game.sign())
-				correct++;
+		int res = 0;
+		t1 = (Team) HibernateUtils.getDBO(t1);
+		t2 = (Team) HibernateUtils.getDBO(t2);
+		Game game = new Game();
+		game.setSeason(2012);
+		game.setAwayTeam(t1);
+		game.setHomeTeam(t2);
+		game = (Game) HibernateUtils.getDBO(game);
+		double[] a = prepareGame(game);
+
+		FileInputStream fis;
+		try {
+			fis = new FileInputStream("C:\\Users\\stanev\\Desktop\\network.ser");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			NeuralNetwork network = (NeuralNetwork) ois.readObject();
+			res = network.guess(a);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		System.out.println("dafuq");
-		System.out.println((double) correct / (testGames.size() - 0));
+		return res;
+
+	}
+
+	public static void main(String[] args) throws IOException {
+//		Team t1 = new Team("Liverpool", "England");
+//		Team t2 = new Team("Manchester United", "England");
+//		List l1 = null;
+//		List l2 = null;
+//		guess(t1, t2, l1, l2);
+		 for (int s = 2003; s < 2012; s++) {
+		 List games = MoreUtils.getGamesPerSeason(s);
+		 Collections.sort(games);
+		 for (int i = 0; i < games.size(); i++) {
+		 Game game = (Game) games.get(i);
+		 double[] values = prepareGame(game);
+		 if (game.sign() != 0)
+		 for (int j = 0; j < 100; j++)
+		 network.teach(values, game.sign());
+		 else
+		 for (int j = 0; j < 50; j++)
+		 network.teach(values, game.sign());
+		 }
+		 }
+		
+		 List testGames = MoreUtils.getGamesPerSeason(2012);
+		 int correct = 0;
+		 Collections.sort(testGames);
+		 for (int i = 0; i < testGames.size(); i++) {
+		 System.out.println(((Game) testGames.get(i)).getMatchDate());
+		 Game game = (Game) testGames.get(i);
+		 double[] values = prepareGame(game);
+		 int guess = network.guess(values);
+		 System.out.println(game.getHomeTeam().getName() + " : "
+		 + game.getAwayTeam().getName() + " : " + guess);
+		 if (guess == game.sign())
+		 correct++;
+		 }
+		 System.out.println("dafuq");
+		 System.out.println((double) correct / (testGames.size() - 0));
+		
+		 FileOutputStream fos = new
+		 FileOutputStream("C:\\Users\\stanev\\Desktop\\network.ser");
+		 ObjectOutputStream ous = new ObjectOutputStream(fos);
+		 ous.writeObject(network);
 	}
 }

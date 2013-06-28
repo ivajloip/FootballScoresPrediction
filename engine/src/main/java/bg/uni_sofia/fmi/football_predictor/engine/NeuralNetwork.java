@@ -1,8 +1,9 @@
 package bg.uni_sofia.fmi.football_predictor.engine;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class NeuralNetwork {
+public class NeuralNetwork implements Serializable{
 
 	public int numAttributes;
 	public int numClasses;
