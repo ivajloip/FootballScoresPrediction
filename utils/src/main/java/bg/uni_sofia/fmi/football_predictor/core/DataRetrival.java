@@ -160,17 +160,17 @@ public class DataRetrival {
 						match.homePlayers.add(playerHome);
 						match.awayPlayers.add(playerAway);
 
-						GamePlayer gph = new GamePlayer();
-						GamePlayer gpa = new GamePlayer();
+						//GamePlayer gph = new GamePlayer();
+						//GamePlayer gpa = new GamePlayer();
 
-						gph.setGame(match.game);
-						gph.setPlayer(playerHome);
-						gph.setGoals(0);
+						//gph.setGame(match.game);
+						//gph.setPlayer(playerHome);
+						//gph.setGoals(0);
 						// match.game.getHomePlayers().add(gph);
 
-						gpa.setGame(match.game);
-						gpa.setPlayer(playerAway);
-						gpa.setGoals(0);
+						//gpa.setGame(match.game);
+						//gpa.setPlayer(playerAway);
+						//gpa.setGoals(0);
 						// match.game.getAwayPlayers().add(gpa);
 
 					}

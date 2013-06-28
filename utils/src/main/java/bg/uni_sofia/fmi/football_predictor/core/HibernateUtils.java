@@ -51,6 +51,11 @@ public class HibernateUtils {
 		return object;
 	}
 
+	public static DataBaseObject getDBO(DataBaseObject object) {
+		Session session = sessionFactory.openSession();
+		return get(object, session);
+	}
+
 	public static DataBaseObject get(DataBaseObject object, Session session) {
 
 		// session.beginTransaction();
@@ -90,7 +95,7 @@ public class HibernateUtils {
 
 			for (Player player : match.awayPlayers) {
 				player = (Player) save(player, session);
-				GamePlayer gp = new GamePlayer();
+				GamePlayerAway gp = new GamePlayerAway();
 				gp.setGame(match.game);
 				gp.setPlayer(player);
 				match.game.getAwayPlayers().add(gp);
@@ -102,7 +107,13 @@ public class HibernateUtils {
 				gp.setPlayer(player);
 				match.game.getHomePlayers().add(gp);
 			}
+//			System.out.println(match.game.getHomePlayers().size());
+//			System.out.println(match.game.getAwayPlayers().size());
+//			System.out.println();
 			match.game = (Game) save(match.game, session);
+//			System.out.println(match.game.getHomePlayers().size());
+//			System.out.println(match.game.getAwayPlayers().size());
+//			System.out.println();
 			session.getTransaction().commit();
 		} catch (Exception e) {
 
@@ -113,29 +124,32 @@ public class HibernateUtils {
 		}
 	}
 
-	public Set<Player> getPlayers(Team team) {
+	public static Set<Player> getPlayers(Team team) {
 
-		Set<Player> results = null;
+		Set<Player> results = new HashSet<Player>();
 		Session session = sessionFactory.openSession();
 		team = (Team) get(team, session);
 		session.beginTransaction();
 		Criteria criteria = session.createCriteria(Game.class);
 		criteria.add(Restrictions.or(Restrictions.eq("awayTeam", team),
-				Restrictions.eq("homeTeam", team),
-				Restrictions.eq("season", 2012)));
+				Restrictions.eq("homeTeam", team)));
+		criteria.add(Restrictions.eq("season", 2012));
 		List<Game> games = criteria.list();
 		for (Game game : games) {
 			if (game.getAwayTeam().equals(team)) {
 				List<Player> players = new ArrayList<Player>();
-				for (GamePlayer gamePlayer : game.getAwayPlayers()) {
+				for (GamePlayerAway gamePlayer : game.getAwayPlayers()) {
 					players.add(gamePlayer.getPlayer());
 				}
+				System.out.println(game.getHomePlayers().size());
 				results.addAll(players);
 			} else {
 				List<Player> players = new ArrayList<Player>();
 				for (GamePlayer gamePlayer : game.getHomePlayers()) {
 					players.add(gamePlayer.getPlayer());
 				}
+				System.out.println(game.getAwayPlayers().size());
+				System.out.println();
 				results.addAll(players);
 			}
 		}
@@ -144,6 +158,13 @@ public class HibernateUtils {
 
 	// Test...
 	public static void main(String[] args) {
+
+		Session session = sessionFactory.openSession();
+		Team team = new Team("Arsenal", "England");
+		team = (Team) get(team, session);
+		Set<Player> players = getPlayers(team);
+		for (Player player : players)
+			System.out.println(player.getName());
 		//
 		// // SessionFactory sessionFactory = new AnnotationConfiguration()
 		// // .configure().buildSessionFactory();
@@ -242,5 +263,6 @@ public class HibernateUtils {
 		// for (DataBaseObject team : teams)
 		// System.out.println(((Team) team).getCountry());
 		// session.close();
+
 	}
 }

@@ -37,7 +37,7 @@ public class Game extends DataBaseObject implements Comparable<Game> {
 	private int posAway;
 
 	private Set<GamePlayer> homePlayers = new HashSet<GamePlayer>(0);
-	private Set<GamePlayer> awayPlayers = new HashSet<GamePlayer>(0);
+	private Set<GamePlayerAway> awayPlayers = new HashSet<GamePlayerAway>(0);
 	// first year of the season 1996/97 -> 1996
 	private int season;
 	private Date matchDate;
@@ -106,11 +106,11 @@ public class Game extends DataBaseObject implements Comparable<Game> {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.game", cascade = CascadeType.ALL)
-	public Set<GamePlayer> getAwayPlayers() {
+	public Set<GamePlayerAway> getAwayPlayers() {
 		return awayPlayers;
 	}
 
-	public void setAwayPlayers(Set<GamePlayer> awwayPlayers) {
+	public void setAwayPlayers(Set<GamePlayerAway> awwayPlayers) {
 		this.awayPlayers = awwayPlayers;
 	}
 
