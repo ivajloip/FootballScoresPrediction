@@ -10,6 +10,8 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -73,11 +75,20 @@ public class DataRetrival {
 
 				match.home.setName(tableHeaderEles.get(0).text());
 				match.away.setName(tableHeaderEles.get(3).text());
-				match.home.setCountry("England");
-				match.away.setCountry("England");
-				match.game.setScoreHome(Integer.parseInt(tableHeaderEles.get(1).text()));
-				match.game.setScoreAway(Integer.parseInt(tableHeaderEles.get(2).text()));
 				
+				if(temp.getName().contains("Code=EPL")){
+					match.home.setCountry("England");
+					match.away.setCountry("England");
+				}
+				else{
+					continue;
+				}
+				
+				match.game.setScoreHome(Integer.parseInt(tableHeaderEles.get(1)
+						.text()));
+				match.game.setScoreAway(Integer.parseInt(tableHeaderEles.get(2)
+						.text()));
+
 				Elements tableRowElements = tableElements
 						.select(":not(thead) tr");
 
@@ -85,13 +96,17 @@ public class DataRetrival {
 				// Referee, Attendance
 				Element row = tableRowElements.get(1);
 				Elements rowItems = row.select("td");
+				DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+				match.game.setMatchDate(new java.sql.Date(dateFormat.parse(
+						rowItems.get(1).text()).getTime()));
+				// System.out.println(rowItems.get(1).text());
 
-				match.game.setMatchDate(new java.sql.Date(DateUtils.parseDate(
-						rowItems.get(1).text(), "dd/mm/yyyy").getTime()));
+				// System.out.println(dateFormat.parse(rowItems.get(1).text()));
 				int start = rowItems.get(0).text().length() - 5;
 				String league = rowItems.get(0).text().substring(0, start - 1);
-				int year = 2000 + Integer.parseInt(rowItems.get(0).text().substring(start, start + 2));
-				
+				int year = 2000 + Integer.parseInt(rowItems.get(0).text()
+						.substring(start, start + 2));
+
 				match.game.setSeason(year);
 				match.game.setLeague(league);
 				/*
@@ -112,106 +127,107 @@ public class DataRetrival {
 						scorers.append(toBeTrimmed);
 					}
 				}
-				//System.out.println(scorers);
-				//System.out.println("bhfghhdtgfhf");
+				// System.out.println(scorers);
+				// System.out.println("bhfghhdtgfhf");
 				String tmpScorers = "";
 				if (scorers.length() > 0) {
 					tmpScorers = scorers.toString();
-					if(tmpScorers.startsWith(",")){
+					if (tmpScorers.startsWith(",")) {
 						tmpScorers = tmpScorers.substring(1);
 					}
-					tmpScorers = tmpScorers.replaceAll(
-							"(, )+", ",");
-					//tmpScorers = tmpScorers.replaceAll("P", ",");
+					tmpScorers = tmpScorers.replaceAll("(, )+", ",");
+					// tmpScorers = tmpScorers.replaceAll("P", ",");
 					tmpScorers = tmpScorers.replaceAll(",+", ",");
 					tmpScorers = tmpScorers.replaceAll(",\\. ", ",");
 					tmpScorers = tmpScorers.replaceAll("\\([A-Z]+\\)", "");
 					tmpScorers = tmpScorers.replaceAll("[A-Z]+\\)", "");
 					tmpScorers = tmpScorers.replaceAll("\\. ", "");
 					tmpScorers = tmpScorers.replaceAll(",+", ",");
-					if(tmpScorers.startsWith(",")){
+					if (tmpScorers.startsWith(",")) {
 						tmpScorers = tmpScorers.substring(1);
 					}
 				}
-				//System.out.println(tmpScorers);
-				
-				
+				// System.out.println(tmpScorers);
+
 				// {Home Player, Number, Away player, 11}
 				for (int k = 3; k < 14; k++) {
 					row = tableRowElements.get(k);
 					rowItems = row.select("td");
 					for (int j = 0; j + 2 < rowItems.size(); j += 3) {
 						Player playerHome = new Player(rowItems.get(j).text());
-						Player playerAway = new Player(rowItems.get(j + 2).text());
+						Player playerAway = new Player(rowItems.get(j + 2)
+								.text());
 						match.homePlayers.add(playerHome);
 						match.awayPlayers.add(playerAway);
-//						GamePlayer gph = new GamePlayer();
-//						GamePlayer gpa = new GamePlayer();
-//						
-//						gph.setGame(match.game);
-//						gph.setPlayer(playerHome);
-//						gph.setGoals(0);
-//						match.game.getHomePlayers().add(gph);
-//						
-//						gpa.setGame(match.game);
-//						gpa.setPlayer(playerAway);
-//						gpa.setGoals(0);
-//						match.game.getAwayPlayers().add(gpa);
-						
+
+						GamePlayer gph = new GamePlayer();
+						GamePlayer gpa = new GamePlayer();
+
+						gph.setGame(match.game);
+						gph.setPlayer(playerHome);
+						gph.setGoals(0);
+						// match.game.getHomePlayers().add(gph);
+
+						gpa.setGame(match.game);
+						gpa.setPlayer(playerAway);
+						gpa.setGoals(0);
+						// match.game.getAwayPlayers().add(gpa);
+
 					}
 				}
 
 				String goals[] = tmpScorers.split(",");
 				Map<String, Integer> homeScorers = new Hashtable<String, Integer>();
 				Map<String, Integer> awayScorers = new Hashtable<String, Integer>();
-				
-				for(int k = 0; k < match.game.getScoreHome(); k++){
-					if(!match.game.getAwayPlayers().contains(goals[k])){
-						if(!homeScorers.containsKey(goals[k])){
+
+				for (int k = 0; k < match.game.getScoreHome(); k++) {
+					if (!match.awayPlayers.contains(new Player(goals[k]))) {
+						if (!homeScorers.containsKey(goals[k])) {
 							homeScorers.put(goals[k], new Integer(1));
-						}
-						else{
-							homeScorers.put(goals[k], homeScorers.get(goals[k]) + 1);
+						} else {
+							homeScorers.put(goals[k],
+									homeScorers.get(goals[k]) + 1);
 						}
 					}
 				}
-				
+
 				Iterator<String> iter = homeScorers.keySet().iterator();
-				while(iter.hasNext()){
-					Player player = new Player(iter.next());
-					match.homePlayers.add(player);
-//					GamePlayer gp = new GamePlayer();
-//					gp.setGame(match.game);
-//					gp.setPlayer(player);
-//					gp.setGoals(homeScorers.get(player.getName()));
-//					match.game.getHomePlayers().add(gp);
-				}
-				
-				//Away team goals
-				
-				for(int k = 0; k < match.game.getScoreAway(); k++){
-					String goalee = goals[match.game.getScoreHome() * 2 + match.game.getScoreAway() + k];
-					if(!match.game.getHomePlayers().contains(goalee)){
-						if(!awayScorers.containsKey(goalee)){
+				// while(iter.hasNext()){
+				// Player player = new Player(iter.next());
+				// match.homePlayers.add(player);
+				// GamePlayer gp = new GamePlayer();
+				// gp.setGame(match.game);
+				// gp.setPlayer(player);
+				// gp.setGoals(homeScorers.get(player.getName()));
+				// match.game.getHomePlayers().add(gp);
+				// }
+
+				// Away team goals
+
+				for (int k = 0; k < match.game.getScoreAway(); k++) {
+					String goalee = goals[match.game.getScoreHome() * 2
+							+ match.game.getScoreAway() + k];
+					if (!match.homePlayers.contains(new Player(goalee))) {
+						if (!awayScorers.containsKey(goalee)) {
 							awayScorers.put(goalee, new Integer(1));
-						}
-						else{
-							awayScorers.put(goalee, awayScorers.get(goalee) + 1);
+						} else {
+							awayScorers
+									.put(goalee, awayScorers.get(goalee) + 1);
 						}
 					}
 				}
-				
+
 				iter = awayScorers.keySet().iterator();
-				while(iter.hasNext()){
-					Player player = new Player(iter.next());
-					match.awayPlayers.add(player);
-//					GamePlayer gp = new GamePlayer();
-//					gp.setGame(match.game);
-//					gp.setPlayer(player);
-//					gp.setGoals(awayScorers.get(player.getName()));
-//					match.game.getAwayPlayers().add(gp);
-				}
-				
+				// while(iter.hasNext()){
+				// Player player = new Player(iter.next());
+				// match.awayPlayers.add(player);
+				// GamePlayer gp = new GamePlayer();
+				// gp.setGame(match.game);
+				// gp.setPlayer(player);
+				// gp.setGoals(awayScorers.get(player.getName()));
+				// match.game.getAwayPlayers().add(gp);
+				// }
+
 				// {Minute, ON player, OFF player; n} {HomeBenchWarmer, Number,
 				// AwayBenchwarmer; 5}
 				StringBuilder benchWarmers = new StringBuilder();
@@ -246,13 +262,13 @@ public class DataRetrival {
 					tmpWarmers = tmpWarmers.replaceAll("\\) OFF ,", "");
 					tmpWarmers = tmpWarmers.replaceAll(",&nbsp;", "");
 					tmpWarmers = tmpWarmers.replaceAll(",\\. ", ",");
-					//System.out.print(tmpWarmers);
+					// System.out.print(tmpWarmers);
 					// System.out.println();
 					// System.out.println(substitutions);
 					// System.out.println(remarks);
 				}
-				//System.out.println();
-			HibernateUtils.save(match);
+				// System.out.println();
+				HibernateUtils.save(match);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

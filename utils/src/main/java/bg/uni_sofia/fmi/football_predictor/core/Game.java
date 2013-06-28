@@ -19,7 +19,7 @@ import org.hibernate.criterion.Restrictions;
 
 @Entity
 @Table(name = "game")
-public class Game extends DataBaseObject {
+public class Game extends DataBaseObject implements Comparable<Game> {
 
 	private Integer gameId;
 
@@ -207,5 +207,20 @@ public class Game extends DataBaseObject {
 
 	public void setLeague(String league) {
 		this.league = league;
+	}
+
+	@Override
+	public int compareTo(Game o) {
+		// TODO Auto-generated method stub
+		return this.getMatchDate().compareTo(o.getMatchDate());
+	}
+
+	public int sign() {
+		if (getScoreHome() > getScoreAway())
+			return 0;
+		if (getScoreHome() == getScoreAway())
+			return 1;
+		else
+			return 2;
 	}
 }

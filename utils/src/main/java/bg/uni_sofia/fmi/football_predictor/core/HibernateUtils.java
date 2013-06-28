@@ -1,9 +1,12 @@
 package bg.uni_sofia.fmi.football_predictor.core;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.net.ssl.SSLContext;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -11,11 +14,12 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.service.ServiceRegistryBuilder;
 
 public class HibernateUtils {
 
-	private static SessionFactory buildSessionFactory() {
+	public static SessionFactory buildSessionFactory() {
 		Configuration configuration = new Configuration();
 		configuration.configure("hibernate.cfg.xml");
 		ServiceRegistryBuilder serviceRegistryBuilder = new ServiceRegistryBuilder()
@@ -27,7 +31,7 @@ public class HibernateUtils {
 		return sessionFactory;
 	}
 
-	private static SessionFactory sessionFactory = buildSessionFactory();
+	public static SessionFactory sessionFactory = buildSessionFactory();
 
 	// Save object into database
 	public static DataBaseObject save(DataBaseObject object, Session session) {
@@ -101,12 +105,41 @@ public class HibernateUtils {
 			match.game = (Game) save(match.game, session);
 			session.getTransaction().commit();
 		} catch (Exception e) {
-			
+
 			count++;
 			System.out.println(count);
 		} finally {
 			session.close();
 		}
+	}
+
+	public Set<Player> getPlayers(Team team) {
+
+		Set<Player> results = null;
+		Session session = sessionFactory.openSession();
+		team = (Team) get(team, session);
+		session.beginTransaction();
+		Criteria criteria = session.createCriteria(Game.class);
+		criteria.add(Restrictions.or(Restrictions.eq("awayTeam", team),
+				Restrictions.eq("homeTeam", team),
+				Restrictions.eq("season", 2012)));
+		List<Game> games = criteria.list();
+		for (Game game : games) {
+			if (game.getAwayTeam().equals(team)) {
+				List<Player> players = new ArrayList<Player>();
+				for (GamePlayer gamePlayer : game.getAwayPlayers()) {
+					players.add(gamePlayer.getPlayer());
+				}
+				results.addAll(players);
+			} else {
+				List<Player> players = new ArrayList<Player>();
+				for (GamePlayer gamePlayer : game.getHomePlayers()) {
+					players.add(gamePlayer.getPlayer());
+				}
+				results.addAll(players);
+			}
+		}
+		return results;
 	}
 
 	// Test...
